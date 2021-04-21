@@ -9,25 +9,24 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.regex.Pattern;
 
 @WebServlet(
         description = "Login Servlet Testing",
         urlPatterns = {"/LoginServlet"},
         initParams = {
-                @WebInitParam(name = "user", value = "Tejas"),
+                @WebInitParam(name = "user", value = "^[A-Z]{1}[a-zA-Z]{2,}$"),
                 @WebInitParam(name = "password", value = "123456")
         }
 )
 public class LoginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        //get request parameters for userID and password
         String user = request.getParameter("user");
         String pwd = request.getParameter("pwd");
-        //get servlet config init params
         String userID = getServletConfig().getInitParameter("user");
         String password = getServletConfig().getInitParameter("password");
-        if (userID.equals(user) && password.equals(pwd) ) {
+        if (Pattern.compile(userID).matcher(user).matches() && password.equals(pwd) ) {
             request.setAttribute("user", user);
             request.getRequestDispatcher("loginSuccess.jsp").forward(request, response);
         } else {
